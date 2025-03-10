@@ -1,0 +1,74 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.db
+*.sqlite3
+*.log
+*.pot
+*.mo
+
+# Virtualenv
+.venv/
+env/
+venv/
+
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+__pycache__/
+db.sqlite3
+media/
+static/
+
+# React
+node_modules/
+build/
+*.log
+*.env
+
+# SASS
+.sass-cache/
+*.css
+*.scssc
+*.sassc
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Coverage reports
+.coverage
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# Pytest
+.cache/
+*.tox/
+
+# JetBrains
+.idea/
+
+# VSCode
+.vscode/
+
+# PyInstaller
+*.spec
+
+# Others
+*.bak
+*.swp
+
+dist
