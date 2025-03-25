@@ -1,8 +1,8 @@
+// ../../asutp_frontend/src/WideLayout/Container.tsx
+
 import React, {CSSProperties, ElementType, forwardRef, ReactNode} from 'react';
 import {Box, BoxProps, SxProps, Theme} from '@mui/material';
 
-// 1) Расширяем BoxProps, но переопределяем поле component.
-// 2) Так MUI не будет ругаться на несовместимость типов.
 export interface ContainerProps extends Omit<BoxProps, 'component'> {
     children?: ReactNode;
     cls?: string;
@@ -11,11 +11,7 @@ export interface ContainerProps extends Omit<BoxProps, 'component'> {
     color?: string;
     bg?: string;
     rounded?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
-
-    // Важно: расширяем тип, чтобы принимать и React.ElementType (более общий вариант),
-    // и "строку" для таких случаев, как 'div', 'main', 'header' и т. д.
     component?: ElementType | string;
-
     pEvents?: boolean;
     w?: BoxProps['width'];
     h?: BoxProps['height'];
@@ -54,7 +50,7 @@ const Container = forwardRef<any, ContainerProps>((
         grow,
         ...props
     }, ref) => {
-    // Обработчик стилей прокрутки
+
     const scrollStyles = (_theme: Theme): SxProps<Theme> => ({
         overflowX: scroll?.startsWith('x-')
             ? (scroll.split('-')[1] as CSSProperties['overflowX'])
@@ -67,12 +63,10 @@ const Container = forwardRef<any, ContainerProps>((
             : undefined,
     });
 
-    // Обработчик позиционирования
     const positionStyle = (_theme: Theme): SxProps<Theme> => (
         pos ? {position: pos as CSSProperties['position']} : {}
     );
 
-    // Обработчик цвета и событий указателя
     const colorStyles = (_theme: Theme): SxProps<Theme> => ({
         color: color,
         backgroundColor: bg,
@@ -81,7 +75,6 @@ const Container = forwardRef<any, ContainerProps>((
             : !pEvents ? 'none' : 'all',
     });
 
-    // Обработчик радиуса границы
     const borderRadiusStyles = (_theme: Theme): SxProps<Theme> => {
         const borderRadiusMap: Record<number, string> = {
             0: '0rem',
@@ -99,7 +92,6 @@ const Container = forwardRef<any, ContainerProps>((
         };
     };
 
-    // Собираем сокращённые пропсы в объект для Box
     const additionalBoxProps: Partial<BoxProps> = {
         width: w,
         height: h,
@@ -112,26 +104,20 @@ const Container = forwardRef<any, ContainerProps>((
     };
 
     return (
-        //@ts-ignore
-        <Box
-            ref={ref}
-            {...additionalBoxProps}
-            sx={(theme) => {
-                const baseSx = typeof sx === 'function' ? sx(theme) : sx;
-                return {
-                    ...(baseSx as any),
-                    ...scrollStyles(theme),
-                    ...positionStyle(theme),
-                    ...colorStyles(theme),
-                    ...borderRadiusStyles(theme),
-                    ...(cursorPointer ? {cursor: 'pointer'} : {}),
-                    ...(wrap ? {flexWrap: 'wrap'} : {}),
-                    ...(grow ? {flexGrow: 1} : {}),
-                };
-            }}
-            className={`${cls ?? ''} ${scroll ? 'no-scrollbar' : ''}`}
-            {...props}
-        >
+        <Box {...props} {...additionalBoxProps} ref={ref}
+             className={`${cls ?? ''} ${scroll ? 'no-scrollbar' : ''}`} sx={(theme) => {
+            const baseSx = typeof sx === 'function' ? sx(theme) : sx;
+            return {
+                ...(baseSx as any),
+                ...scrollStyles(theme),
+                ...positionStyle(theme),
+                ...colorStyles(theme),
+                ...borderRadiusStyles(theme),
+                ...(cursorPointer ? {cursor: 'pointer'} : {}),
+                ...(wrap ? {flexWrap: 'wrap'} : {}),
+                ...(grow ? {flexGrow: 1} : {}),
+            };
+        }}>
             {children}
         </Box>
     );
