@@ -1,5 +1,3 @@
-// WideLayout/Layouts.tsx
-
 import React, {forwardRef} from 'react';
 import Container, {ContainerProps} from "./Container";
 
@@ -658,6 +656,28 @@ const FREE = forwardRef<HTMLDivElement, ContainerProps>(({
 ));
 FREE.displayName = 'FREE';
 
+// FREC (Flex Row End Center)
+const FREC = forwardRef<HTMLDivElement, ContainerProps>(({
+                                                             children,
+                                                             sx = {},
+                                                             ...props
+                                                         }, ref) => (
+    <Container
+        ref={ref}
+        {...props}
+        sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            ...sx
+        }}
+    >
+        {children}
+    </Container>
+));
+FREC.displayName = 'FREC';
+
 const FRST = forwardRef<HTMLDivElement, ContainerProps>(({
                                                              children,
                                                              sx = {},
@@ -874,5 +894,5 @@ export {
     FR, FC, FCC, FCS, FRS, FCE, FRE, FCB, FCA, FRC, FRB, FRA,
     FCCC, FCCS, FRCS, FRCE, FCCE, FCBC, FCAC, FRCC, FRBC, FRBS,
     FRBE, FRAC, FCSC, FRSC, FCSS, FRSS, FCSE, FRSE, FCEE, FCEC,
-    FREE, FRST, FRCT, FRET, FRBST, FRAST, FCST, FCCST, FCEST, FCBST, FCAST,
+    FREE, FRST, FRCT, FRET, FREC, FRBST, FRAST, FCST, FCCST, FCEST, FCBST, FCAST,
 };

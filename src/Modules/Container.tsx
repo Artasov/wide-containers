@@ -1,5 +1,3 @@
-// ../../asutp_frontend/src/WideLayout/Container.tsx
-
 import React, {CSSProperties, ElementType, forwardRef, ReactNode} from 'react';
 import {Box, BoxProps, SxProps, Theme} from '@mui/material';
 
@@ -11,6 +9,7 @@ export interface ContainerProps extends Omit<BoxProps, 'component'> {
     color?: string;
     bg?: string;
     rounded?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+    opacity?: number;                   // 0 – 100, controls transparency
     component?: ElementType | string;
     pEvents?: boolean;
     w?: BoxProps['width'];
@@ -36,6 +35,7 @@ const Container = forwardRef<any, ContainerProps>((
         color,
         bg,
         rounded,
+        opacity,
         pEvents,
         w,
         h,
@@ -68,14 +68,15 @@ const Container = forwardRef<any, ContainerProps>((
     );
 
     const colorStyles = (_theme: Theme): SxProps<Theme> => ({
-        color: color,
-        backgroundColor: bg,
+        color,
+        ...(bg ? { background: bg } : {}),
         pointerEvents: pEvents === undefined
             ? 'unset'
             : !pEvents ? 'none' : 'all',
     });
 
     const borderRadiusStyles = (_theme: Theme): SxProps<Theme> => {
+        if (rounded === undefined) return {};                     // <-- не мешаем sx.borderRadius
         const borderRadiusMap: Record<number, string> = {
             0: '0rem',
             1: '0.25rem',
@@ -85,12 +86,14 @@ const Container = forwardRef<any, ContainerProps>((
             5: '2rem',
             6: '50%',
         };
-        return {
-            borderRadius: rounded !== undefined
-                ? borderRadiusMap[rounded]
-                : undefined,
-        };
+        return {borderRadius: borderRadiusMap[rounded]};
     };
+
+    const opacityStyles = (_theme: Theme): SxProps<Theme> => (
+        opacity !== undefined
+            ? {opacity: Math.min(Math.max(opacity, 0), 100) / 100} // clamp 0-100 → 0-1
+            : {}
+    );
 
     const additionalBoxProps: Partial<BoxProps> = {
         width: w,
@@ -104,20 +107,27 @@ const Container = forwardRef<any, ContainerProps>((
     };
 
     return (
-        <Box {...props} {...additionalBoxProps} ref={ref}
-             className={`${cls ?? ''} ${scroll ? 'no-scrollbar' : ''}`} sx={(theme) => {
-            const baseSx = typeof sx === 'function' ? sx(theme) : sx;
-            return {
-                ...(baseSx as any),
-                ...scrollStyles(theme),
-                ...positionStyle(theme),
-                ...colorStyles(theme),
-                ...borderRadiusStyles(theme),
-                ...(cursorPointer ? {cursor: 'pointer'} : {}),
-                ...(wrap ? {flexWrap: 'wrap'} : {}),
-                ...(grow ? {flexGrow: 1} : {}),
-            };
-        }}>
+        // @ts-ignore
+        <Box
+            {...props}
+            {...additionalBoxProps}
+            ref={ref}
+            className={`${cls ?? ''} ${scroll ? 'no-scrollbar' : ''}`}
+            sx={(theme) => {
+                const baseSx = typeof sx === 'function' ? sx(theme) : sx;
+                return {
+                    ...(baseSx as any),
+                    ...scrollStyles(theme),
+                    ...positionStyle(theme),
+                    ...colorStyles(theme),
+                    ...borderRadiusStyles(theme),
+                    ...opacityStyles(theme),
+                    ...(cursorPointer ? {cursor: 'pointer'} : {}),
+                    ...(wrap ? {flexWrap: 'wrap'} : {}),
+                    ...(grow ? {flexGrow: 1} : {}),
+                };
+            }}
+        >
             {children}
         </Box>
     );
