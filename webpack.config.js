@@ -9,6 +9,7 @@ module.exports = {
         library: "wideUi",
         libraryTarget: "umd",
         umdNamedDefine: true,
+        globalObject: "globalThis",
     },
     resolve: {
         extensions: [".tsx", ".ts", ".js"],
